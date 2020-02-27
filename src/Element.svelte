@@ -65,6 +65,9 @@
 
 
 <style>
+  div {
+    @apply rounded shadow-md
+  }
   p {
     margin: 8px 0;
     overflow: hidden

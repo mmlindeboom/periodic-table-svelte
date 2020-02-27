@@ -3,6 +3,9 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
+import sveltePreprocess from 'svelte-preprocess'
+import postcss from 'rollup-plugin-postcss';
+import svelte_preprocess_postcss from 'svelte-preprocess-postcss';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -19,7 +22,10 @@ export default {
 			// enable run-time checks when not in production
 			dev: !production,
 			// we'll extract any component CSS out into
-			// a separate file - better for performance
+      // a separate file - better for performance
+      preprocess: {
+        style: svelte_preprocess_postcss(),
+     },
 			css: css => {
 				css.write('public/build/bundle.css');
 			}
@@ -35,7 +41,9 @@ export default {
 			dedupe: ['svelte']
 		}),
 		commonjs(),
-
+    postcss({
+      extract: true,
+    }),
 		// In dev mode, call `npm run start` once
 		// the bundle has been generated
 		!production && serve(),

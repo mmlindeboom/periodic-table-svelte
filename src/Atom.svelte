@@ -33,7 +33,7 @@
     ctx.translate(w / 2, h / 2);
 
     // draw sun
-    circle('#999999', 10);
+    circle('#999999', 5);
     ctx.restore();
     drawAnim = window.requestAnimationFrame(draw)
   }
@@ -74,11 +74,11 @@
 
       // rotate + move along x
 
-      ctx.rotate(rotation/v);
+      ctx.rotate(rotation/(v));
       ctx.translate(v, 0);
 
       // draw planet
-      circle('blue', 2);
+      circle('red', 2);
 
 
       rotation += 0.04
@@ -123,8 +123,13 @@
 
 </script>
 
+<style>
+  div {
+    border: 1px solid #ccc;
+    @apply rounded;
+  }
+</style>
 <div class={canvasStyle}>
-  <h4>{atom.name}</h4>
-  <canvas id="atomCanvas"  height="300" width="300" />
+  <canvas id="atomCanvas"  height="150" width="300" />
 </div>
 

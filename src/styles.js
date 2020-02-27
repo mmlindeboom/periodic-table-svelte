@@ -12,11 +12,7 @@ const elWidth = () => (windowWidth / 18) - ((elMargin*2) + (borderWidth*2));
 window.addEventListener('resize', () => windowWidth = window.innerWidth)
 
 export const canvasStyle = css`
-  position: absolute;
-  left: calc(((100%/18) - ${elMargin*2}px)*6);
-  top: 300px;
-  width: 500px;
-  height: 500px
+
 `
 export const elementStyle = (color="#fff", visible, count=18) => css`
   position: relative;
