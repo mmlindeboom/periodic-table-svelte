@@ -1,27 +1,28 @@
 <script>
   import Tailwindcss from './Tailwindcss.svelte';
   import { onMount } from 'svelte';
-  import Elements from "@chemistry/elements";
-  import Element from "./Element.svelte";
-  import ElementDetail from './ElementDetail.svelte'
-  import Atom from './Atom.svelte'
+
   import { v4 as uuidv4 } from 'uuid';
   import { tableStyle } from "./styles.js";
+  import Filters from './Filters.svelte'
+  import Table from './Table.svelte'
 
+  import Elements from "@chemistry/elements";
   const { ChemElements, ChemElementData } = Elements;
 
-  const emptyElTemplate = () => {
-     return {
-      uuid: uuidv4(),
-      visible: false
-    }
-  }
-
+  // State
   let rows = []
   let filtered = false
-  let filterName = ''
+  let filteredByNobleGases = false
   let atom = null
+  const filters = []
 
+  const emptyElTemplate = () => {
+      return {
+        uuid: uuidv4(),
+        visible: false
+      }
+    }
   const updateAtom = (el) => {
     atom = null
     setTimeout(() => atom = el, 10)
@@ -48,41 +49,36 @@
     return table;
   }, new Array(9));
 
-
-
-  const nobleGases = () => {
-    rows = []
-    atom = null
-    filtered = true
-    filterName = 'Noble Gases'
-    const gases = [2, 10, 18, 36, 54, 86]
-
-    rows = [ChemElementData.filter((el) => {
-      if (el.name === "Dummy" || el.symbol === "D") return false
-      return gases.includes(el.id)
-    })]
-  }
   const all = () => {
     atom = null
     rows = []
     filtered = false
     rows = allRows
   }
+
   onMount(() => {
     rows = allRows
   })
 </script>
 
 <style>
+  main {
+    overflow: hidden;
+  }
+
+  header {
+    height: 3em;
+    margin-bottom: 4em;
+  }
+
+
   h1 {
     color: #ff3e00;
     text-transform: uppercase;
-    font-size: 4em;
+    font-size: 2em;
     font-weight: 100;
-  }
-
-  .btn {
-    @apply bg-white text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow;
+    display: inline-block;
+    @apply align-middle;
   }
 
   @media (min-width: 640px) {
@@ -95,23 +91,12 @@
 
 
 
-<main class={tableStyle}>
-  <h1 style="text-align: center">Periodic Table</h1>
-  <div style="text-align: center">
-    <button on:click="{() => all()}" class="btn">All</button>
-    <button on:click="{() => nobleGases()}" class="btn">Noble Gases</button>
-  </div>
-  {#if atom}
-    <!-- <Atom atom={atom}></Atom> -->
-    <ElementDetail atom={atom} close={() => atom = null}></ElementDetail>
-  {/if}
-  <div>
-    {#each rows as row}
-      {#if row}
-        {#each row as el (el.uuid)}
-            <Element updateAtom={() => updateAtom(el)} count={row.length} {...el} />
-        {/each}
-      {/if}
-    {/each}
-  </div>
+<main class="table-container {tableStyle}">
+  <header>
+    <h1>Periodic Table</h1>
+    <Filters filtered={filtered} allRows={allRows} filterRows={(filteredRows) => {
+      rows = filteredRows}} />
+  </header>
+
+  <Table updateAtom={updateAtom} rows={rows} atom={atom} />
 </main>

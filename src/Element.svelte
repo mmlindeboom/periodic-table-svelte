@@ -1,5 +1,6 @@
 <script>
   import { fly, fade } from 'svelte/transition'
+  import { afterUpdate } from 'svelte'
   import { elementStyle } from './styles'
   /**
    * Number in periodic table
@@ -48,12 +49,17 @@
   export let visible
   export let count
   export let updateAtom
+
+  export let inactive
+
 </script>
+
 {#if visible}
   <div
     on:click={updateAtom}
     in:fly="{{ delay: 5 * id, y: -20}}"
-    class="{elementStyle(color, visible)}">
+    class:inactive
+    class="{ elementStyle(color, visible)}">
     <p class="id">{id}</p>
     <p class="symbol">{symbol}</p>
     <p class="name">{name}</p>
@@ -65,8 +71,20 @@
 
 
 <style>
+  .inactive {
+    opacity: 0.2;
+    pointer-events: none;
+    transition: all 0.6s
+  }
+
   div {
-    @apply rounded shadow-md
+    transition: all 0.4s;
+    @apply rounded shadow-md;
+  }
+  div:hover {
+    cursor: pointer;
+    border-color: darkseagreen;
+    @apply shadow-lg
   }
   p {
     margin: 8px 0;

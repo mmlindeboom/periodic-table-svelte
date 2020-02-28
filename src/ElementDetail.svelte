@@ -8,11 +8,12 @@
 <style>
   .detail-card {
     position: absolute;
-    width: 600px;
-    min-height: 150px;
+    width: 500px;
+    min-height: 300px;
     left: 15%;
-    top: 300px;
+    top: 8em;
     border: 1px solid #ccc;
+    z-index: 100;
     @apply rounded shadow-lg px-6 py-4 overflow-hidden;
   }
 
