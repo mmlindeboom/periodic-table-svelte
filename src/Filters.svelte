@@ -1,16 +1,26 @@
 <script>
+  import { onMount, createEventDispatcher } from 'svelte'
   const NOBLE_GASES = [2, 10, 18, 36, 54, 86]
-  const ALKALAI_METALS = [3, 4, 5, 6, 7]
-  const TRANSITION_METALS = [21, 22, 23, 24, 25, 26, 27, 28, 29, 39, 40, 41, 42, 43, 44, 45, 46, 47, 72, 73, 74, 75, 76, 77, 78, 79, 104, 105, 106, 107, 108]
+  const ALKALI_METALS = [3, 11, 19, 37, 55, 87]
+  const EARTH_METALS = [4, 12, 20, 38, 56, 88]
+  const TRANSITION_METALS = [21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 72, 73, 74, 75, 76, 77, 78, 79, 80, 104, 105, 106, 107, 108, 109, 110, 111, 112]
 
   const availableFilters = {
+    ALKALI_METALS,
+    EARTH_METALS,
     NOBLE_GASES,
-    ALKALAI_METALS,
     TRANSITION_METALS
   }
-  const activeFilters = []
+  let activeFilters = []
 
   const toggleActiveFilter = (filter) => {
+    if (!filter) {
+      resetFilters()
+      handleFilter()
+
+      return
+    }
+
     if (activeFilters.includes(filter)) {
       activeFilters.splice(activeFilters.indexOf(filter), 1)
     } else {
@@ -21,15 +31,20 @@
 
   const dispatchFilter = (filter) => {
     switch(filter) {
-      case 'NOBLE_GASES':
-        toggleActiveFilter('NOBLE_GASES')
+      case 'ALKALI_METALS':
+        toggleActiveFilter('ALKALI_METALS')
       break
-      case 'ALKALAI_METALS':
-        toggleActiveFilter('ALKALAI_METALS')
+      case 'EARTH_METALS':
+        toggleActiveFilter('EARTH_METALS')
+      break
+       case 'NOBLE_GASES':
+        toggleActiveFilter('NOBLE_GASES')
       break
       case 'TRANSITION_METALS':
         toggleActiveFilter('TRANSITION_METALS')
       break
+      default:
+        toggleActiveFilter()
 
     }
   }
@@ -65,38 +80,64 @@
     // })]
   }
 
+
+  const resetFilters = () => {
+    activeFilters = []
+    filterStates.forEach((state) => state.checked = false)
+  }
+
   export let filterRows
   export let filtered
   export let allRows
+
+  let AM
+  let AEM
+  let TM
+  let NB
+
+  let filterStates = []
+
+  onMount(() => {
+    filterStates = [AM, AEM, TM, NB]
+  })
 </script>
 
 
 
 <div class="filters">
+
   <label>
-    Noble Gases
-    <input type="checkbox" on:change="{() => dispatchFilter('NOBLE_GASES')}" />
+    Alkali Metals
+    <input type="checkbox" bind:this={AM} on:change="{() => dispatchFilter('ALKALI_METALS')}" />
   </label>
   <label>
-    Alkalai Metals
-    <input type="checkbox" on:change="{() => dispatchFilter('ALKALAI_METALS')}" />
+    Alkaline Earth Metals
+    <input type="checkbox" bind:this={AEM} on:change="{() => dispatchFilter('EARTH_METALS')}" />
   </label>
   <label>
     Transition Metals
-    <input type="checkbox" on:change="{() => dispatchFilter('TRANSITION_METALS')}" />
+    <input type="checkbox" bind:this={TM} on:change="{() => dispatchFilter('TRANSITION_METALS')}" />
   </label>
+  <label>
+    Noble Gases
+    <input type="checkbox" bind:this={NB} on:change="{() => dispatchFilter('NOBLE_GASES')}" />
+  </label>
+  <button on:click={() => dispatchFilter()}>Clear Filters</button>
 </div>
 
 <style>
   .filters {
+    display: flex;
     height: 3em;
     display: inline-block;
     border-left: 1px solid gray;
+    align-items: center;
     @apply ml-4 pl-4 align-middle;
   }
 
-  label {
-    display: inline-block;
+  label, button {
+    line-height: 3rem;
+    font-size: 1em;
     @apply ml-4 pl-4 align-middle;
   }
 </style>

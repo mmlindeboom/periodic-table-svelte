@@ -1,6 +1,6 @@
 <script>
   import { fly, fade } from 'svelte/transition'
-  import { afterUpdate } from 'svelte'
+  import { onMount, afterUpdate } from 'svelte'
   import { elementStyle } from './styles'
   /**
    * Number in periodic table
@@ -52,11 +52,26 @@
 
   export let inactive
 
+  let detailDirection
+
+  let element
+
+
+  onMount(() => {
+    detailDirection = 'left'
+    if (posY > 3) {
+      detailDirection = 'top'
+    }
+    if (posY > 12) {
+      detailDirection = 'right'
+    }
+  })
 </script>
 
 {#if visible}
   <div
-    on:click={updateAtom}
+    bind:this={element}
+    on:click={() => updateAtom(element, detailDirection)}
     in:fly="{{ delay: 5 * id, y: -20}}"
     class:inactive
     class="{ elementStyle(color, visible)}">
@@ -81,13 +96,14 @@
     transition: all 0.4s;
     @apply rounded shadow-md;
   }
+
   div:hover {
     cursor: pointer;
     border-color: darkseagreen;
     @apply shadow-lg
   }
+
   p {
-    margin: 8px 0;
     overflow: hidden
   }
   .id {
@@ -95,6 +111,7 @@
   }
   .symbol {
     font-size: 1.2em;
+    @apply
   }
   .name {
     font-size: 0.7em

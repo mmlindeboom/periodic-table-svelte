@@ -74,7 +74,7 @@
 
       // rotate + move along x
 
-      ctx.rotate(rotation/(v));
+      // ctx.rotate(rotation/(v));
       ctx.translate(v, 0);
 
       // draw planet

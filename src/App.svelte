@@ -1,14 +1,12 @@
 <script>
-  import Tailwindcss from './Tailwindcss.svelte';
-  import { onMount } from 'svelte';
 
-  import { v4 as uuidv4 } from 'uuid';
-  import { tableStyle } from "./styles.js";
+  import { onMount } from 'svelte';
+  import Tailwindcss from './Tailwindcss.svelte'
   import Filters from './Filters.svelte'
   import Table from './Table.svelte'
+  import Grid from './Grid.svelte'
 
-  import Elements from "@chemistry/elements";
-  const { ChemElements, ChemElementData } = Elements;
+  import { defaultTableData } from './data.js'
 
   // State
   let rows = []
@@ -17,54 +15,37 @@
   let atom = null
   const filters = []
 
-  const emptyElTemplate = () => {
-      return {
-        uuid: uuidv4(),
-        visible: false
-      }
-    }
   const updateAtom = (el) => {
     atom = null
     setTimeout(() => atom = el, 10)
   }
 
-  const allRows = ChemElementData.reduce((table, el) => {
-    if (el.name === "Dummy" || el.symbol === "D") return table;
-    el = Object.assign(el, emptyElTemplate())
-
-    const x = el.posX - 1;
-    const y = el.posY - 1;
-
-    if (table[x] === undefined) {
-      const newRow = new Array(18)
-      for (let step = 0; step < 18; step++) {
-        newRow[step] = emptyElTemplate()
-      }
-      table[x] = newRow
-    }
-
-    el.visible = true
-    table[x][y] = el;
-
-    return table;
-  }, new Array(9));
 
   const all = () => {
     atom = null
     rows = []
     filtered = false
-    rows = allRows
+    rows = defaultTableData
   }
 
   onMount(() => {
-    rows = allRows
+    rows = defaultTableData
   })
 </script>
 
-<style>
-  main {
-    overflow: hidden;
-  }
+<main class="table-container">
+  <header>
+    <h1>Periodic Table</h1>
+    <Filters filtered={filtered} allRows={defaultTableData} filterRows={(filteredRows) => {
+      rows = filteredRows}} />
+  </header>
+  <Grid />
+  <Table updateAtom={updateAtom} rows={rows} atom={atom} />
+</main>
+
+
+<style type="text/postcss">
+
 
   header {
     height: 3em;
@@ -89,14 +70,4 @@
 </style>
 
 
-
-
-<main class="table-container {tableStyle}">
-  <header>
-    <h1>Periodic Table</h1>
-    <Filters filtered={filtered} allRows={allRows} filterRows={(filteredRows) => {
-      rows = filteredRows}} />
-  </header>
-
-  <Table updateAtom={updateAtom} rows={rows} atom={atom} />
-</main>
+<Tailwindcss />

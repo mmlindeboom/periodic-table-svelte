@@ -2,8 +2,7 @@ import emotion from 'emotion/dist/emotion.umd.min.js';
 
 const { css } = emotion;
 
-const windowWidth = window.innerWidth
-const elHeight = 75;
+let windowWidth = window.innerWidth
 const elPadding = 8;
 const elMargin = 4;
 const borderWidth = 1
@@ -17,7 +16,7 @@ export const canvasStyle = css`
 export const elementStyle = (color="#fff", visible, count=18) => css`
   position: relative;
   box-sizing: border-box;
-  width: calc((100%/18) - ${elMargin*2}px);
+  width: calc((100%/18) - (${elMargin*2}px));
   minWidth: 50px;
   background: ${color};
   border: ${borderWidth}px solid ${LightenDarkenColor(color, -20)};
@@ -26,9 +25,14 @@ export const elementStyle = (color="#fff", visible, count=18) => css`
   display: inline-block;
   visibility: ${visible ? 'visible' : 'hidden' };
 `
-
-export const tableStyle = css`
-  width: ${window.innerWidth}
+export const gridCellStyle = css`
+  position: relative;
+  box-sizing: border-box;
+  width: calc((100%/19) - (${elMargin*2}px));
+  minWidth: 50px;
+  padding: ${elPadding}px;
+  margin: ${elMargin}px;
+  display: inline-block;
   text-align: center;
 `
 
