@@ -5,12 +5,15 @@ const { ChemElements, ChemElementData } = Elements;
 const emptyElTemplate = () => {
   return {
     uuid: uuidv4(),
-    visible: false
+    visible: false,
+    titleColumn: false,
+    titleRow: false,
+    title: null
   }
 }
 
 const isRowHeader = (row, col) => {
-  return col === 0 && row > 0
+  return col === 0 && row > 0 && row < 8
 }
 const isColumnHeader = (row, col) => {
   if (row === 0 && col === 1) return true
@@ -20,19 +23,22 @@ const isColumnHeader = (row, col) => {
   if (row === 1 && col >= 13 && col < 18) return true
 }
 
-export const gridData = [...Array(8)].map((_, rowIdx) => {
+export const gridData = [...Array(11)].map((_, rowIdx) => {
   const columns = [...Array(19)].map((_, colIdx) => {
-    const obj = { titleColumn: false, titleRow: false, value: null, id: `${rowIdx}-${colIdx}-${Math.random()}`}
+    const obj = emptyElTemplate()
     if (isColumnHeader(rowIdx, colIdx)) {
       obj.titleColumn = true
-      obj.value = colIdx
+      obj.title = colIdx
+      obj.visible = true
     } else if (colIdx === 0 && rowIdx === 0) {
       obj.titleRow = true
+      obj.visible = true
     }
 
     if (isRowHeader(rowIdx, colIdx)) {
       obj.titleRow = true
-      obj.value = rowIdx
+      obj.title = rowIdx
+      obj.visible = true
     }
 
     return obj
@@ -63,3 +69,16 @@ export const defaultTableData = ChemElementData.reduce((table, el) => {
 
   return table;
 }, new Array(9));
+
+export const pt = ChemElementData.reduce((table, element) => {
+  if (element.name === "Dummy" || element.symbol === "D") return table;
+  let x = element.posX
+  let y = element.posY
+  if (!table[x]) {
+    return table
+  }
+  table[x][y].visible = true
+  table[x][y] = Object.assign(element, table[x][y])
+
+  return table
+}, gridData);

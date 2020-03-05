@@ -1,10 +1,9 @@
 module.exports = {
   theme: {
     screens: {
-      sm: '640px',
-      md: '768px',
-      lg: '1024px',
-      xl: '1280px',
+      mobile: '360px',
+      tablet: '1024px',
+      laptop: '1280px',
     },
     fontFamily: {
       display: ["Playfair Display", "serif"],
@@ -16,6 +15,7 @@ module.exports = {
       '2': '2px',
       '4': '4px',
     },
+    textSizes: ['tablet', 'hover', 'focus', 'active', 'group-hover'],
     extend: {
       colors: {
         cyan: '#9cdbff',

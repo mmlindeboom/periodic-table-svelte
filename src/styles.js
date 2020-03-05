@@ -16,24 +16,14 @@ export const canvasStyle = css`
 export const elementStyle = (color="#fff", visible, count=18) => css`
   position: relative;
   box-sizing: border-box;
-  width: calc((100%/18) - (${elMargin*2}px));
-  minWidth: 50px;
   background: ${color};
   border: ${borderWidth}px solid ${LightenDarkenColor(color, -20)};
   padding: ${elPadding}px;
   margin: ${elMargin}px;
-  display: inline-block;
   visibility: ${visible ? 'visible' : 'hidden' };
 `
 export const gridCellStyle = css`
-  position: relative;
-  box-sizing: border-box;
-  width: calc((100%/19) - (${elMargin*2}px));
-  minWidth: 50px;
-  padding: ${elPadding}px;
-  margin: ${elMargin}px;
-  display: inline-block;
-  text-align: center;
+
 `
 
 function LightenDarkenColor(col, amt) {

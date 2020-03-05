@@ -2,6 +2,9 @@
   import { fly, fade } from 'svelte/transition'
   import { onMount, afterUpdate } from 'svelte'
   import { elementStyle } from './styles'
+
+  export let detail
+  export let variant
   /**
    * Number in periodic table
    */
@@ -68,23 +71,52 @@
   })
 </script>
 
+<!------------------------------------------->
+<!----------------MARKUP--------------------->
+<!------------------------------------------->
+
 {#if visible}
   <div
     bind:this={element}
-    on:click={() => updateAtom(element, detailDirection)}
+    on:click={() => updateAtom(element, detailDirection, variant)}
     in:fly="{{ delay: 5 * id, y: -20}}"
     class:inactive
-    class="{ elementStyle(color, visible)}">
-    <p class="id">{id}</p>
-    <p class="symbol">{symbol}</p>
-    <p class="name">{name}</p>
-    <p class="mass">{mass}</p>
+    class:detail
+
+    class="{variant}-screen {elementStyle(color, visible)}">
+
+
+    {#if variant === 'mobile'}
+      <p class="symbol">{symbol}</p>
+    {/if}
+
+    {#if variant === 'tablet'}
+      <p class="id">{id}</p>
+      <p class="symbol">{symbol}</p>
+    {/if}
+
+    {#if variant === 'laptop'}
+      <p class="id">{id}</p>
+      <p class="symbol">{symbol}</p>
+      <p class="name">{name}</p>
+      <p class="mass">{mass}</p>
+    {/if}
+
+    {#if detail}
+      <p class="id">{id}</p>
+      <p class="symbol">{symbol}</p>
+      <p class="name">{name}</p>
+      <p class="mass">{mass}</p>
+    {/if}
+
   </div>
 {:else}
   <div class="{elementStyle(color, visible, count)}"></div>
 {/if}
 
-
+<!------------------------------------------->
+<!----------------STYLES--------------------->
+<!------------------------------------------->
 <style>
   .inactive {
     opacity: 0.2;
@@ -92,7 +124,15 @@
     transition: all 0.6s
   }
 
+  .detail {
+    display: inline-block;
+    font-size: 1em;
+  }
+
   div {
+    text-align: left;
+    font-size: 1.25em;
+    color: #000;
     transition: all 0.4s;
     @apply rounded shadow-md;
   }
@@ -113,11 +153,19 @@
     font-size: 1.2em;
     @apply
   }
+
   .name {
     font-size: 0.7em
 
   }
   .mass {
     font-size: 0.75em
+  }
+
+  .mobile-screen, .tablet-screen{
+    font-size: 0.875em;
+    text-align: center;
+    margin: 4px;
+    padding: 4px;
   }
 </style>

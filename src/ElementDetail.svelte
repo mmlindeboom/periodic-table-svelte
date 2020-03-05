@@ -1,8 +1,13 @@
+<!------------------------------------------->
+<!----------------JS------------------------->
+<!------------------------------------------->
+
 <script>
   import { onMount, afterUpdate } from 'svelte'
   import { fly, slide } from 'svelte/transition'
   import Atom from './Atom.svelte'
   import Element from './Element.svelte'
+  import { CloseBtn } from './ui'
   export let atom
   export let close
   export let selectedEl
@@ -42,7 +47,6 @@
   }
   onMount(() => {
     detailRect = detailElement.getBoundingClientRect()
-
   })
 
   afterUpdate(() => {
@@ -66,14 +70,19 @@
 
   })
 </script>
+
+<!------------------------------------------->
+<!----------------MARKUP--------------------->
+<!------------------------------------------->
 {#if fullDetail}
   <div class="detail-card full"
       transition:fly
       bind:this={detailElement}
+
   >
 
-  <button on:click={() => (fullDetail = false), close()} class="close">x</button>
-  <Element {...atom}/>
+  <CloseBtn handleClick={() => close()} />
+  <Element detail={true} {...atom}/>
   <!-- <div class="atom-card">
     <Atom atom={atom} />
   </div> -->
@@ -122,7 +131,9 @@
 {/if}
 
 
-
+<!------------------------------------------->
+<!----------------STYLE---------------------->
+<!------------------------------------------->
 
 <style type="text/postcss">
 
@@ -140,11 +151,12 @@
 
   .detail-card.full {
     position: fixed;
-    height: 100vh;
+    height: 100%;
     width: 100%;
     left: 0;
     top: 0;
-    transition: all 0.6s
+    border: 0;
+    transition: all 0.6s;
   }
   svg.pointer-left {
     position: absolute;
@@ -170,18 +182,6 @@
 
   .atom-card {
     @apply float-right
-  }
-
-  button.close {
-    position: absolute;
-    top: 5px;
-    right: 15px;
-    color: gray;
-    @apply bg-white border-none
-  }
-
-  button.close:hover {
-    color: black
   }
 </style>
 

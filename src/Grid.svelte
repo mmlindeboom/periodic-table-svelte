@@ -1,36 +1,79 @@
+<!------------------------------------------->
+<!----------------JS------------------------->
+<!------------------------------------------->
 <script>
-  import { gridData } from './data.js'
   import { gridCellStyle } from './styles'
+
+  import Element from "./Element.svelte";
+  import ElementDetail from "./ElementDetail.svelte";
+
+  export let rows;
+  export let atom;
+  export let updateAtom;
+  export let variant = 'laptop';
+
+  let selectedEl
+  let detailDirection = 'left'
+
+  const toggleDetail = (el, dom, direction) => {
+    if (dom) {
+      atom = el
+      selectedEl = dom.getBoundingClientRect()
+      detailDirection = direction
+    }
+  }
 </script>
+<!------------------------------------------->
+<!----------------MARKUP--------------------->
+<!------------------------------------------->
 
+{#if atom}
+  <ElementDetail
+    selectedEl={selectedEl}
+    direction={detailDirection}
+    atom={atom}
+    fullDetail={variant !== 'laptop'}
+    close={() => (atom = null)} />
+{/if}
 
-
-<div class="grid-container">
-  {#each gridData as row}
-    {#each row as cell}
+<div class="grid-container {variant}-screen">
+  {#each rows as row}
+    {#each row as cell(cell.uuid)}
       <div class="grid-cell" class:title-row={cell.titleRow} class:title-column={cell.titleColumn}>
-      {#if cell.value}
-        {cell.value}
-      {/if}
+        {#if cell.title}
+          {cell.title}
+        {/if}
+        {#if cell.symbol}
+          <Element variant={variant} updateAtom={(domEl, direction) => toggleDetail(cell, domEl, direction)}
+            count={row.length}
+            {...cell} />
+        {/if}
       </div>
     {/each}
   {/each}
 </div>
 
+<!------------------------------------------->
+<!----------------STYLES--------------------->
+<!------------------------------------------->
+
 <style>
   .grid-container {
-    display: grid;
-    grid-template-columns: 2rem 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-rows: 20px 98px 98px 98px 98px 98px 98px 98px 98px 98px;
-    grid-row-gap: 8px;
-    top: 119px;
+    position: relative;
     left: 0;
-    position: absolute;
     width: 100%;
-    padding-right: 2rem;
+    display: grid;
+    grid-template-columns: 2rem repeat(18, [col-start] 1fr);
+    grid-template-rows: 20px auto;
+    grid-row-gap: 4px;
+    width: 100%;
     align-self: center
   }
 
+  .grid-container.tablet-screen {
+    grid-row-gap: 2px;
+    grid-column-gap: 2px
+  }
 
   .grid-cell {
     text-align:center;

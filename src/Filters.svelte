@@ -1,5 +1,12 @@
+<!------------------------------------------->
+<!----------------JS------------------------->
+<!------------------------------------------->
 <script>
   import { onMount, createEventDispatcher } from 'svelte'
+  import { fly, slide } from 'svelte/transition'
+  import { CloseIcon, FilterIcon } from './icons'
+  import { CloseBtn } from './ui'
+
   const NOBLE_GASES = [2, 10, 18, 36, 54, 86]
   const ALKALI_METALS = [3, 11, 19, 37, 55, 87]
   const EARTH_METALS = [4, 12, 20, 38, 56, 88]
@@ -11,7 +18,7 @@
     NOBLE_GASES,
     TRANSITION_METALS
   }
-  let activeFilters = []
+  let activeFiltersIds = []
 
   const toggleActiveFilter = (filter) => {
     if (!filter) {
@@ -21,10 +28,10 @@
       return
     }
 
-    if (activeFilters.includes(filter)) {
-      activeFilters.splice(activeFilters.indexOf(filter), 1)
+    if (activeFiltersIds.includes(filter)) {
+      activeFiltersIds.splice(activeFiltersIds.indexOf(filter), 1)
     } else {
-      activeFilters.push(filter)
+      activeFiltersIds.push(filter)
     }
     handleFilter()
   }
@@ -50,7 +57,7 @@
   }
   const handleFilter = () => {
 
-    const filteredList = activeFilters.reduce((list, filter) => {
+    const filteredList = activeFiltersIds.reduce((list, filter) => {
       return list.concat(availableFilters[filter])
     }, [])
 
@@ -82,62 +89,175 @@
 
 
   const resetFilters = () => {
-    activeFilters = []
-    filterStates.forEach((state) => state.checked = false)
+
+    filterItems.forEach((item) => {
+      const {el, active} = item
+
+      if (active) {
+        el.click()
+      }
+    })
+
   }
 
   export let filterRows
-  export let filtered
   export let allRows
 
-  let AM
-  let AEM
-  let TM
-  let NB
 
-  let filterStates = []
+  let showFilterMenu = false
+
+  let AM
+  let amIsFiltered = false
+  let AEM
+  let aemIsFiltered = false
+  let TM
+  let tmIsFiltered = false
+  let NB
+  let nbIsFiltered = false
+
+  let filterItems
+
+  $: filterStates = [[AM, amIsFiltered], [AEM, aemIsFiltered], [TM, tmIsFiltered], [NB, nbIsFiltered]]
+
 
   onMount(() => {
-    filterStates = [AM, AEM, TM, NB]
+    filterItems = [
+    {el: AM, active: amIsFiltered, title: 'Alkali Metals', event: 'ALKALI_METALS'},
+    {el: AEM, active: aemIsFiltered, title: 'Alkaline Earth Metals', event: 'EARTH_METALS'},
+    {el: TM, active: tmIsFiltered, title: 'Transition Metals', event: 'TRANSITION_METALS'},
+    {el: NB, active: nbIsFiltered, title: 'Noble Gases', event: 'NOBLE_GASES'}
+  ]
   })
+
+
 </script>
 
 
+<!------------------------------------------->
+<!----------------MARKUP--------------------->
+<!------------------------------------------->
+<div class="filters-container">
+  <button class="text-black hover:underline flex items-center text-base"
+        on:click={() => showFilterMenu ? showFilterMenu = false : showFilterMenu = true}>
 
-<div class="filters">
 
-  <label>
-    Alkali Metals
-    <input type="checkbox" bind:this={AM} on:change="{() => dispatchFilter('ALKALI_METALS')}" />
-  </label>
-  <label>
-    Alkaline Earth Metals
-    <input type="checkbox" bind:this={AEM} on:change="{() => dispatchFilter('EARTH_METALS')}" />
-  </label>
-  <label>
-    Transition Metals
-    <input type="checkbox" bind:this={TM} on:change="{() => dispatchFilter('TRANSITION_METALS')}" />
-  </label>
-  <label>
-    Noble Gases
-    <input type="checkbox" bind:this={NB} on:change="{() => dispatchFilter('NOBLE_GASES')}" />
-  </label>
-  <button on:click={() => dispatchFilter()}>Clear Filters</button>
+      <FilterIcon size="4" className="mr-1" />
+      <span>Search</span>
+  </button>
+  {#if showFilterMenu }
+    <div
+      in:fly={{y: -10}}
+      out:fly={{y: -10}}
+      class="filters-menu">
+      <CloseBtn handleClick={() => showFilterMenu = false} className="bg-gray-200" />
+      <div class="filters">
+        <ul class="flex flex-wrap justify-center">
+          {#each filterItems as filter}
+            <li class="filter-item">
+              <div class:active={filter.active} class="filter-pill">
+                <label class="filter-label">
+                    {filter.title}
+                  <input class="hidden" type="checkbox" bind:checked={filter.active} bind:this={filter.el} on:change={() => dispatchFilter(filter.event)} />
+                </label>
+              </div>
+            </li>
+          {/each}
+          <li>
+            <button class="pl-2 text-sm text-red-700 hover:underline" on:click={resetFilters}><CloseIcon size="2" className="mr-1" />Clear Filters</button>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  {/if}
+
 </div>
 
+
+
+<!-- <ShowWhen screen="> mobile">
+  <div class="filters max-w-lg my-4 mobile:max-w-xs">
+    <ul class="flex flex-wrap justify-center">
+      {#each filterItems as filter}
+        <li class="filter-item">
+          <div class:active={filter.active} class="filter-pill">
+            <label class="filter-label">
+                {filter.title}
+              <input class="hidden" type="checkbox" bind:checked={filter.active} bind:this={filter.el} on:change={() => dispatchFilter(filter.event)} />
+            </label>
+          </div>
+        </li>
+      {/each}
+      <li>
+        <button class="pl-2 text-sm text-red-700 hover:underline" on:click={() => dispatchFilter()}><CloseIcon size="2" className="mr-1" />Clear Filters</button>
+      </li>
+    </ul>
+  </div>
+</ShowWhen> -->
+
+
+<!------------------------------------------->
+<!----------------STYLES--------------------->
+<!------------------------------------------->
 <style>
-  .filters {
-    display: flex;
-    height: 3em;
+  .filters-container {
     display: inline-block;
-    border-left: 1px solid gray;
-    align-items: center;
-    @apply ml-4 pl-4 align-middle;
+    @apply ml-10;
+  }
+  .filters {
+    display: block;
+    margin: 2rem auto;
+    position: relative;
+    text-align: center;
+    padding-bottom: 1rem;
+    z-index: 100
   }
 
-  label, button {
-    line-height: 3rem;
-    font-size: 1em;
-    @apply ml-4 pl-4 align-middle;
+  .filters div {
+    transition: all 0.2s;
+    @apply text-blue-500;
+  }
+
+  .filters div:hover {
+    @apply text-blue-700 border-blue-700;
+  }
+
+  .filters div label:hover {
+    cursor: pointer;
+  }
+
+  .filters .active {
+    @apply bg-blue-500 text-white;
+  }
+
+  .filters .active:hover {
+    @apply bg-blue-700 text-white;
+  }
+
+
+  .filter-item {
+    @apply mr-2 mb-2 flex-initial;
+  }
+
+  .filter-pill {
+    @apply border border-blue-500 rounded-full;
+  }
+
+  .filter-label {
+    font-weight: 400;
+    white-space:nowrap;
+    @apply px-2 text-xs leading-tight;
+  }
+
+  .filters-menu {
+    position: fixed;
+    height: 15vh;
+    width: 100%;
+    left: 0;
+    top: 0;
+    border: 0;
+    transition: all 0.6s;
+    z-index: 100;
+    @apply bg-gray-200 shadow-md
   }
 </style>
