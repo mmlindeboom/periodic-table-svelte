@@ -8,6 +8,7 @@
   import Filters from './Filters.svelte'
   import Table from './Table.svelte'
   import Grid from './Grid.svelte'
+  import Atom from './Atom.svelte'
   import ShowWhen from './responsive/ShowWhen.svelte'
 
   import { pt } from './data.js'
@@ -17,6 +18,7 @@
   let filtered = false
   let filteredByNobleGases = false
   let atom = null
+  let h = null
   const filters = []
 
   const updateAtom = (el) => {
@@ -34,6 +36,7 @@
 
   onMount(() => {
     rows = pt
+    h = rows[2][14]
   })
 </script>
 <!------------------------------------------->
@@ -45,7 +48,9 @@
     <Filters filtered={filtered} allRows={pt} filterRows={(filteredRows) => {
       rows = filteredRows}} />
   </header>
-
+  {#if h}
+    <Atom size="300" atom={h}></Atom>
+    {/if}
   <div class="table-container">
     <ShowWhen screen="mobile">
       <Grid variant='mobile' updateAtom={updateAtom} rows={rows} atom={atom} />
@@ -82,19 +87,7 @@
     @apply mb-3 align-middle;
   }
 
-  .hero-bg {
-    position: absolute;
-    width: 100%;
-    height: 14vh;
-    top: 0;
-    left: 0;
-    background-image: url(https://wallpaperaccess.com/download/cool-minimalist-345806);
-    background-size: 25%;
-    background-repeat: no-repeat;
-    background-position: -100px 0;
-    background-color: black;
-    z-index: 0
-  }
+
   .table-container {
     overflow-y: scroll
   }

@@ -141,7 +141,7 @@
         on:click={() => showFilterMenu ? showFilterMenu = false : showFilterMenu = true}>
 
 
-      <FilterIcon size="4" className="mr-1" />
+      <FilterIcon size="3" className="mr-1" />
       <span>Search</span>
   </button>
   {#if showFilterMenu }
@@ -251,7 +251,7 @@
 
   .filters-menu {
     position: fixed;
-    height: 15vh;
+    min-height: 95px;
     width: 100%;
     left: 0;
     top: 0;

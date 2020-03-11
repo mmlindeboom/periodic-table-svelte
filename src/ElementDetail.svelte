@@ -74,21 +74,26 @@
 <!------------------------------------------->
 <!----------------MARKUP--------------------->
 <!------------------------------------------->
-{#if fullDetail}
+{#if atom}
   <div class="detail-card full"
       transition:fly
       bind:this={detailElement}
 
   >
 
-  <CloseBtn handleClick={() => close()} />
-  <Element detail={true} {...atom}/>
-  <!-- <div class="atom-card">
-    <Atom atom={atom} />
-  </div> -->
-  <div class="detail-body py-4">
-    Lorem ipsum
-  </div>
+    <CloseBtn handleClick={() => close()} />
+    <Element detail={fullDetail} {...atom}/>
+    <div class="detail-body py-4">
+      <ul>
+        <li><strong>Atomic Number:</strong> {atom.id}</li>
+        <li><strong>Mass:</strong> {atom.mass}</li>
+
+      </ul>
+    </div>
+    <div class="atom-card container mx-auto">
+      <Atom size="300" atom={atom} />
+    </div>
+
 
   </div>
 
@@ -117,13 +122,15 @@
       {/if}
     </svg>
 
-    <button on:click={close} class="close">x</button>
+    <CloseBtn handleClick={() => close()} />
     <h3>{atom.name}</h3>
-    <div class="atom-card">
+    <div class="atom-card container mx-auto">
       <Atom atom={atom} />
     </div>
     <div class="detail-body py-4">
-      Lorem ipsum
+      <ul>
+        <li>Mass: {atom.mass}</li>
+      </ul>
     </div>
 
     <div class="detail-footer"><button on:click={handleFullDetail}>More</button></div>
@@ -181,7 +188,7 @@
   }
 
   .atom-card {
-    @apply float-right
+    width: 150px
   }
 </style>
 

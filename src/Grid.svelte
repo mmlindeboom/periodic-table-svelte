@@ -32,10 +32,10 @@
     selectedEl={selectedEl}
     direction={detailDirection}
     atom={atom}
-    fullDetail={variant !== 'laptop'}
+    fullDetail={true}
     close={() => (atom = null)} />
 {/if}
-
+<!-- variant !== 'laptop' -->
 <div class="grid-container {variant}-screen">
   {#each rows as row}
     {#each row as cell(cell.uuid)}

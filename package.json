@@ -17,6 +17,7 @@
     "prettier": "^1.19.1",
     "rollup": "^1.20.0",
     "rollup-plugin-livereload": "^1.0.0",
+    "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-postcss": "^2.1.1",
     "rollup-plugin-svelte": "^5.0.3",
     "rollup-plugin-terser": "^5.1.2",
@@ -28,6 +29,7 @@
   "dependencies": {
     "@chemistry/elements": "^2.9.0",
     "emotion": "^10.0.27",
+    "pixi.js": "^5.2.1",
     "sirv-cli": "^0.4.4",
     "uuid": "^7.0.1"
   }
